@@ -9,7 +9,7 @@
     "url": "https://github.com/mendix/native-widgets.git"
   },
   "config": {},
-  "packagePath": "com.mendix.widget.native",
+  "packagePath": "com.emixa.collincustom",
   "scripts": {
     "start": "pluggable-widgets-tools start:native",
     "build": "pluggable-widgets-tools build:native",

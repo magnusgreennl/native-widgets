@@ -1,6 +1,13 @@
 import { createElement, ReactElement, useCallback, useMemo, useState } from "react";
 import { LayoutChangeEvent, Text, TextStyle, View } from "react-native";
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryGroup, VictoryStack } from "victory-native";
+import {
+    VictoryAxis,
+    VictoryBar,
+    VictoryChart,
+    VictoryGroup,
+    VictoryStack,
+    VictoryVoronoiContainer
+} from "victory-native";
 import { BarProps } from "victory-bar";
 import { extractStyles } from "@mendix/pluggable-widgets-tools";
 
@@ -19,6 +26,9 @@ export interface ColumnChartProps {
     showLabels: boolean;
     xAxisLabel?: string;
     yAxisLabel?: string;
+    offsetY: number;
+    useTooltip: boolean;
+    tooltipString?: string;
     warningPrefix?: string;
 }
 
@@ -53,6 +63,9 @@ export function ColumnChart({
     showLabels,
     xAxisLabel,
     yAxisLabel,
+    offsetY,
+    useTooltip,
+    tooltipString,
     showLegend,
     sortOrder,
     style,
@@ -160,6 +173,8 @@ export function ColumnChart({
         [setChartDimensions]
     );
 
+    const useOffsetY = offsetY !== 9999; //Empty value is not allowed for Integer in widget configuration, so 9999
+
     return (
         <View style={style.container} testID={name}>
             {dataTypesResult instanceof Error ? (
@@ -178,6 +193,18 @@ export function ColumnChart({
                                 {chartDimensions ? (
                                     <VictoryChart
                                         domainPadding={{ x: style.domain?.padding?.x, y: style.domain?.padding?.y }}
+                                        /*CC: Include a pressable surface that show a tooltip with the text tooltipString */
+                                        containerComponent={
+                                            useTooltip ? (
+                                                <VictoryVoronoiContainer
+                                                    voronoiDimension="x"
+                                                    labels={({ datum }) =>
+                                                        `${replaceTokens(tooltipString || "", [], datum.x, datum.y)}`
+                                                    }
+                                                    //Add LabelComponent if style of tooltip needs to be changed
+                                                />
+                                            ) : undefined
+                                        }
                                         // width and height can't be zero
                                         // TODO: this needs to be checked for bar chart
                                         height={chartDimensions?.height || undefined}
@@ -196,7 +223,17 @@ export function ColumnChart({
                                             {...(firstSeries?.xFormatter
                                                 ? { tickFormat: firstSeries.xFormatter }
                                                 : undefined)}
+                                            /*CC: Offset x-axis to a value set by user in widget.  Set y0 so set baseline to lowest value - 1. The -1 is to keep room for ticks on x-axis*/
+                                            offsetY={useOffsetY ? offsetY : undefined}
+                                            y0={useOffsetY ? (d: any) => d.y0 - 1 : undefined}
                                         />
+                                        {useOffsetY && (
+                                            <VictoryAxis /*CC: Add y=0 x-axis, without any ticks if original x-axis is offset */
+                                                orientation={"bottom"}
+                                                style={mapToAxisStyle(style.grid, style.xAxis)}
+                                                tickFormat={() => ""}
+                                            />
+                                        )}
                                         <VictoryAxis
                                             style={mapToAxisStyle(style.grid, style.yAxis)}
                                             orientation={"left"}
@@ -361,4 +398,36 @@ function sortSeriesDataPoints(
 
         return { ...seriesItem, dataPoints: sortedDataPoints };
     });
+}
+
+function replaceTokens(text: string, replacementStack: string[], xValue: any, yValue: any) {
+    /* CC: Replace Tokens in given string, taken from https://stackoverflow.com/questions/43818516/replace-text-with-tokens-from-a-list-using-regular-expression
+    Updated with typescript and changed tokens array to widget specific values */
+    let tokens: { [key: string]: string | undefined } = {
+        x: String(xValue),
+        y: String(yValue)
+    };
+
+    const re = /{[\w]*\}/g; // match initial regex
+
+    let result = text;
+    let textTokens = text.match(re);
+    replacementStack = replacementStack || [];
+
+    textTokens &&
+        textTokens.forEach(m => {
+            let token = m.replace(/{|}/g, "");
+            // Prevent circular replacement, token should not have already replaced
+            if (replacementStack.indexOf(token) === -1) {
+                // add token to replacement stack
+                replacementStack.push(token);
+                let replacement = tokens[token];
+                if (replacement) {
+                    replacement = replaceTokens(replacement, replacementStack, xValue, yValue);
+                    result = result.replace(m, replacement);
+                }
+            }
+        });
+
+    return result;
 }

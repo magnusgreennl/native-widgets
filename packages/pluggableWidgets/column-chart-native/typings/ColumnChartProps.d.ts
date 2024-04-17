@@ -53,6 +53,9 @@ export interface ColumnChartProps<Style> {
     showLegend: boolean;
     xAxisLabel?: DynamicValue<string>;
     yAxisLabel?: DynamicValue<string>;
+    offsetY: number;
+    useTooltip: boolean;
+    tooltipString: string;
 }
 
 export interface ColumnChartPreviewProps {
@@ -71,4 +74,7 @@ export interface ColumnChartPreviewProps {
     showLegend: boolean;
     xAxisLabel: string;
     yAxisLabel: string;
+    offsetY: number | null;
+    useTooltip: boolean;
+    tooltipString: string;
 }
