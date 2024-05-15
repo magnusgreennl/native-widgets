@@ -130,10 +130,11 @@
                 </property>
                 <property key="sortOrder" type="enumeration" defaultValue="ascending">
                     <caption>Sort order</caption>
-                    <description>Applicable only to Y axis attributes.</description>
+                    <description>Applicable only to Y axis attributes. Use no sort if you don't want to use the order of the data input.</description>
                     <enumerationValues>
                         <enumerationValue key="ascending">Ascending</enumerationValue>
                         <enumerationValue key="descending">Descending</enumerationValue>
+                        <enumerationValue key="noSort">No sort</enumerationValue>
                     </enumerationValues>
                 </property>
             </propertyGroup>
@@ -160,11 +161,15 @@
                     <caption>Offset Y</caption>
                     <description>Manually set offset of x-axis from bottom of graph. Default of 9999 will lead to no offset.</description>
                 </property>
+                <property key="fixLabelOverlap" type="boolean" defaultValue="false">
+                    <caption>Fix label overlap</caption>
+                    <description>When true, this prop reduces the number of tick labels to fit the length of the x-axis. Labels are removed at approximately even intervals from the original array of labels. This feature only works well for labels that are approximately evenly spaced.</description>
+                </property>
                 <property key="useTooltip" type="boolean" defaultValue="false">
                     <caption>Include tooltip</caption>
                     <description>Include a VictoryVoronoiContainer component, which displays a tooltip when pressed.</description>
                 </property>
-                <property key="tooltipString" type="string">
+                <property key="tooltipString" type="string" defaultValue="{y}">
                     <caption>Tooltip text</caption>
                     <description>Text to display in tooltip. You can use tokens {x} and {y} to dynamically use the column values.</description>
                 </property>

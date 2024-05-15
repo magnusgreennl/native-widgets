@@ -14,6 +14,7 @@ export function ColumnChart(props: ColumnChartProps<ColumnChartStyle>): ReactEle
         xAxisLabel,
         yAxisLabel,
         offsetY,
+        fixLabelOverlap,
         useTooltip,
         tooltipString,
         showLabels,
@@ -38,6 +39,7 @@ export function ColumnChart(props: ColumnChartProps<ColumnChartStyle>): ReactEle
             xAxisLabel={xAxisLabel?.value}
             yAxisLabel={yAxisLabel?.value}
             offsetY={offsetY}
+            fixLabelOverlap={fixLabelOverlap}
             useTooltip={useTooltip}
             tooltipString={tooltipString}
             warningPrefix={`[${name}]: `}

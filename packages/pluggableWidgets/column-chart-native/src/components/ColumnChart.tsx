@@ -27,6 +27,7 @@ export interface ColumnChartProps {
     xAxisLabel?: string;
     yAxisLabel?: string;
     offsetY: number;
+    fixLabelOverlap: boolean;
     useTooltip: boolean;
     tooltipString?: string;
     warningPrefix?: string;
@@ -64,6 +65,7 @@ export function ColumnChart({
     xAxisLabel,
     yAxisLabel,
     offsetY,
+    fixLabelOverlap,
     useTooltip,
     tooltipString,
     showLegend,
@@ -122,7 +124,6 @@ export function ColumnChart({
                     : undefined;
 
             const columnStyles = mapToColumnStyles(normalizedColumnColors[index], seriesStyle);
-
             return (
                 <VictoryBar
                     key={index}
@@ -226,16 +227,19 @@ export function ColumnChart({
                                             /*CC: Offset x-axis to a value set by user in widget.  Set y0 so set baseline to lowest value - 1. The -1 is to keep room for ticks on x-axis*/
                                             offsetY={useOffsetY ? offsetY : undefined}
                                             y0={useOffsetY ? (d: any) => d.y0 - 1 : undefined}
+                                            /*CC: Added option for fixLabelOverlap */
+                                            fixLabelOverlap ={fixLabelOverlap}
                                         />
                                         {useOffsetY && (
                                             <VictoryAxis /*CC: Add y=0 x-axis, without any ticks if original x-axis is offset */
                                                 orientation={"bottom"}
-                                                style={mapToAxisStyle(style.grid, style.xAxis)}
+                                                style={mapToAxisStyle(style.grid, style.xAxis0)}
                                                 tickFormat={() => ""}
                                             />
                                         )}
                                         <VictoryAxis
-                                            style={mapToAxisStyle(style.grid, style.yAxis)}
+                                        /*CC: Changed style.grid to gridY to allow for only grid on y-axis. */
+                                            style={mapToAxisStyle(style.gridY, style.yAxis)}
                                             orientation={"left"}
                                             dependentAxis
                                             {...(firstSeries?.yFormatter
@@ -372,6 +376,10 @@ function sortSeriesDataPoints(
     if (seriesDataType.y !== "number") {
         return series;
     }
+    if (sortingOrder === "noSort") {
+        /*CC Added enum option noSort to force not sorting if x-axis is string datatype and y-axis is number (it always used ascending/descending)*/
+        return series;
+    }
     const keysSum: { [key: string]: number } = {};
     series.forEach(({ dataPoints }) => {
         dataPoints.forEach(({ x, y }) => {
@@ -386,7 +394,6 @@ function sortSeriesDataPoints(
 
     return series.map(seriesItem => {
         const dataPoints = seriesItem.dataPoints as Array<ColumnDataPoint<string, number>>;
-
         const sortedDataPoints = Object.keys(keysSum)
             .sort((key1, key2) => {
                 return sortingOrder === "descending" ? keysSum[key2] - keysSum[key1] : keysSum[key1] - keysSum[key2];

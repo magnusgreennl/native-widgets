@@ -54,7 +54,9 @@ export interface ColumnChartStyle {
     errorMessage?: TextStyle;
     chart?: ViewStyle;
     grid?: ColumnChartGridStyle;
+    gridY?: ColumnChartGridStyle;
     xAxis?: ColumnChartAxisStyle<"X">;
+    xAxis0?: ColumnChartAxisStyle<"X">;
     yAxis?: ColumnChartAxisStyle<"Y">;
     legend?: ColumnChartLegendStyle;
     domain?: {
