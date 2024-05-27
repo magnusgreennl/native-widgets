@@ -72,6 +72,26 @@ export interface ColumnChartStyle {
             };
         };
     };
+
+    tooltip?: ColumnChartTooltipStyle;
+}
+
+/*CC: Add type for tooltip styling (should match possible values in Mendix Native JS styling and usage in StyleUtils.ts*/
+export interface ColumnChartTooltipStyle {
+    tooltipStyle: {
+        fill?: string;
+    };
+    flyoutStyle: {
+        stroke?: string;
+        fill?: string;
+        strokeWidth?: number;
+    };
+    flyoutPadding: {
+        top?: number;
+        bottom?: number;
+        left?: number;
+        right?: number;
+    };
 }
 
 export const defaultColumnChartStyle: ColumnChartStyle = {

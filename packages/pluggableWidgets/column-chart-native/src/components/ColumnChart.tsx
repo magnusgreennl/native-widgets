@@ -6,6 +6,7 @@ import {
     VictoryChart,
     VictoryGroup,
     VictoryStack,
+    VictoryTooltip,
     VictoryVoronoiContainer
 } from "victory-native";
 import { BarProps } from "victory-bar";
@@ -14,7 +15,13 @@ import { extractStyles } from "@mendix/pluggable-widgets-tools";
 import { ColumnChartStyle } from "../ui/Styles";
 import { SortOrderEnum } from "../../typings/ColumnChartProps";
 import { Legend } from "./Legend";
-import { aggregateGridPadding, mapToAxisStyle, mapToGridStyle, mapToColumnStyles } from "../utils/StyleUtils";
+import {
+    aggregateGridPadding,
+    mapToAxisStyle,
+    mapToGridStyle,
+    mapToColumnStyles,
+    mapToTooltipStyle
+} from "../utils/StyleUtils";
 
 export interface ColumnChartProps {
     name: string;
@@ -174,7 +181,8 @@ export function ColumnChart({
         [setChartDimensions]
     );
 
-    const useOffsetY = offsetY !== 9999; //Empty value is not allowed for Integer in widget configuration, so 9999
+    const useOffsetY = offsetY !== 9999; //CC: Empty value is not allowed for Integer in widget configuration, so 9999
+    const tooltipProps = mapToTooltipStyle(style.tooltip);
 
     return (
         <View style={style.container} testID={name}>
@@ -202,7 +210,9 @@ export function ColumnChart({
                                                     labels={({ datum }) =>
                                                         `${replaceTokens(tooltipString || "", [], datum.x, datum.y)}`
                                                     }
-                                                    //Add LabelComponent if style of tooltip needs to be changed
+                                                    labelComponent={
+                                                        <VictoryTooltip {...tooltipProps} constrainToVisibleArea />
+                                                    }
                                                 />
                                             ) : undefined
                                         }
@@ -228,7 +238,7 @@ export function ColumnChart({
                                             offsetY={useOffsetY ? offsetY : undefined}
                                             y0={useOffsetY ? (d: any) => d.y0 - 1 : undefined}
                                             /*CC: Added option for fixLabelOverlap */
-                                            fixLabelOverlap ={fixLabelOverlap}
+                                            fixLabelOverlap={fixLabelOverlap}
                                         />
                                         {useOffsetY && (
                                             <VictoryAxis /*CC: Add y=0 x-axis, without any ticks if original x-axis is offset */
@@ -238,7 +248,7 @@ export function ColumnChart({
                                             />
                                         )}
                                         <VictoryAxis
-                                        /*CC: Changed style.grid to gridY to allow for only grid on y-axis. */
+                                            /*CC: Changed style.grid to gridY to allow for only grid on y-axis. */
                                             style={mapToAxisStyle(style.gridY, style.yAxis)}
                                             orientation={"left"}
                                             dependentAxis

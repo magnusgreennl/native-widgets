@@ -1,8 +1,8 @@
 import { VictoryChartProps } from "victory-chart";
 import { VictoryAxisCommonProps, VictoryCommonProps } from "victory-core";
 import { VictoryBarProps } from "victory-bar";
-
-import { ColumnChartAxisStyle, ColumnChartGridStyle, ColumnChartStyle } from "../ui/Styles";
+import { VictoryTooltipProps } from "victory-tooltip";
+import { ColumnChartAxisStyle, ColumnChartGridStyle, ColumnChartStyle, ColumnChartTooltipStyle } from "../ui/Styles";
 
 export function mapToGridStyle(
     gridStyle?: ColumnChartGridStyle
@@ -10,6 +10,26 @@ export function mapToGridStyle(
     return {
         background: {
             fill: gridStyle?.backgroundColor
+        }
+    };
+}
+
+/* CC: Add VictoryTooltip style options */
+export function mapToTooltipStyle(tooltipStyle?: ColumnChartTooltipStyle): VictoryTooltipProps {
+    return {
+        style: {
+            fill: tooltipStyle?.tooltipStyle.fill ?? "black"
+        },
+        flyoutStyle: {
+            stroke: tooltipStyle?.flyoutStyle.stroke ?? "black",
+            fill: tooltipStyle?.flyoutStyle.fill ?? "lightgrey",
+            strokeWidth: tooltipStyle?.flyoutStyle.strokeWidth ?? 2
+        },
+        flyoutPadding: {
+            top: tooltipStyle?.flyoutPadding.top ?? 5,
+            bottom: tooltipStyle?.flyoutPadding.bottom ?? 5,
+            left: tooltipStyle?.flyoutPadding.left ?? 5,
+            right: tooltipStyle?.flyoutPadding.right ?? 5
         }
     };
 }
