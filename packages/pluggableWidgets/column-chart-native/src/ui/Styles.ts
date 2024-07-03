@@ -80,6 +80,7 @@ export interface ColumnChartStyle {
 export interface ColumnChartTooltipStyle {
     tooltipStyle: {
         fill?: string;
+        fontFamily?: string;
     };
     flyoutStyle: {
         stroke?: string;

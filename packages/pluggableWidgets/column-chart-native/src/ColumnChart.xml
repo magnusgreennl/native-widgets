@@ -173,6 +173,18 @@
                     <caption>Tooltip text</caption>
                     <description>Text to display in tooltip. You can use tokens {x} and {y} to dynamically use the column values.</description>
                 </property>
+                <property key="pointerLength" type="integer" defaultValue="9999">
+                    <caption>Pointer length</caption>
+                    <description>Length of the triangular pointer extending from the flyout. 0 means no pointer and 9999 will result in a default value.</description>
+                </property>
+                <property key="mouseFollowTooltips" type="boolean" defaultValue="true">
+                    <caption>Follow mouse</caption>
+                    <description>If true, the center of the tooltip follows the position of the mouse/touch.</description>
+                </property>
+                <property key="centerOffsetY" type="integer" defaultValue="9999">
+                    <caption>Center offset Y</caption>
+                    <description>Determines the position of the center of the tooltip flyout in relation to the flyout pointer in the y-direction. Default of 9999 will lead to no offset.</description>
+                </property>
             </propertyGroup>
             <propertyGroup caption="Common">
                 <systemProperty key="Name" />

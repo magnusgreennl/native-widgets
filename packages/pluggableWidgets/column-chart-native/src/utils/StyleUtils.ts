@@ -18,7 +18,8 @@ export function mapToGridStyle(
 export function mapToTooltipStyle(tooltipStyle?: ColumnChartTooltipStyle): VictoryTooltipProps {
     return {
         style: {
-            fill: tooltipStyle?.tooltipStyle.fill ?? "black"
+            fill: tooltipStyle?.tooltipStyle.fill ?? "black",
+            fontFamily: tooltipStyle?.tooltipStyle.fontFamily ?? "open sans"
         },
         flyoutStyle: {
             stroke: tooltipStyle?.flyoutStyle.stroke ?? "black",

@@ -57,6 +57,9 @@ export interface ColumnChartProps<Style> {
     fixLabelOverlap: boolean;
     useTooltip: boolean;
     tooltipString: string;
+    pointerLength: number;
+    mouseFollowTooltips: boolean;
+    centerOffsetY: number;
 }
 
 export interface ColumnChartPreviewProps {
@@ -79,4 +82,7 @@ export interface ColumnChartPreviewProps {
     fixLabelOverlap: boolean;
     useTooltip: boolean;
     tooltipString: string;
+    pointerLength: number | null;
+    mouseFollowTooltips: boolean;
+    centerOffsetY: number | null;
 }

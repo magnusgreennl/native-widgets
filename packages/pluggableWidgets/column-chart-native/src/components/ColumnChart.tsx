@@ -37,6 +37,9 @@ export interface ColumnChartProps {
     fixLabelOverlap: boolean;
     useTooltip: boolean;
     tooltipString?: string;
+    pointerLength?: number;
+    mouseFollowTooltips: boolean;
+    centerOffsetY?: number;
     warningPrefix?: string;
 }
 
@@ -75,6 +78,9 @@ export function ColumnChart({
     fixLabelOverlap,
     useTooltip,
     tooltipString,
+    pointerLength,
+    mouseFollowTooltips,
+    centerOffsetY,
     showLegend,
     sortOrder,
     style,
@@ -182,7 +188,11 @@ export function ColumnChart({
     );
 
     const useOffsetY = offsetY !== 9999; //CC: Empty value is not allowed for Integer in widget configuration, so 9999
+    const usePointerLength = pointerLength !== 9999; //CC: Empty value is not allowed for Integer in widget configuration, so 9999
+    const useCenterOffset = centerOffsetY !== 9999; //CC: Empty value is not allowed for Integer in widget configuration, so 9999
     const tooltipProps = mapToTooltipStyle(style.tooltip);
+    // const yValues: number[] = firstSeries.dataPoints.map((point) => point.y).filter((y): y is number => typeof y === 'number');
+    // const absoluteHeight = yValues.length > 0 ? Math.max(...yValues) - Math.min(...yValues) : 15;
 
     return (
         <View style={style.container} testID={name}>
@@ -202,16 +212,27 @@ export function ColumnChart({
                                 {chartDimensions ? (
                                     <VictoryChart
                                         domainPadding={{ x: style.domain?.padding?.x, y: style.domain?.padding?.y }}
-                                        /*CC: Include a pressable surface that show a tooltip with the text tooltipString */
+                                        /*CC:   Include a pressable surface that show a tooltip with the text tooltipString
+                                                And allow to not show pointer or set its length. */
                                         containerComponent={
                                             useTooltip ? (
                                                 <VictoryVoronoiContainer
                                                     voronoiDimension="x"
+                                                    mouseFollowTooltips={mouseFollowTooltips}
                                                     labels={({ datum }) =>
                                                         `${replaceTokens(tooltipString || "", [], datum.x, datum.y)}`
                                                     }
                                                     labelComponent={
-                                                        <VictoryTooltip {...tooltipProps} constrainToVisibleArea />
+                                                        <VictoryTooltip
+                                                            {...tooltipProps}
+                                                            constrainToVisibleArea
+                                                            pointerLength={usePointerLength ? pointerLength : undefined}
+                                                            centerOffset={
+                                                                useCenterOffset
+                                                                    ? { ...{ y: centerOffsetY } }
+                                                                    : undefined
+                                                            }
+                                                        />
                                                     }
                                                 />
                                             ) : undefined
